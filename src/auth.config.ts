@@ -2,12 +2,17 @@ import type { NextAuthConfig } from "next-auth";
 
 export default {
   trustHost: true,
+
   session: {
     strategy: "jwt",
   },
+
   pages: {
     signIn: "/admin/login",
   },
+
+  providers: [],
+
   callbacks: {
     authorized({ auth, request }) {
       const isAdmin = request.nextUrl.pathname.startsWith("/admin");

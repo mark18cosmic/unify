@@ -10,8 +10,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: {
+          label: "Email",
+          type: "email",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+        },
       },
 
       async authorize(creds) {
@@ -21,20 +27,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const password = String(creds?.password || "");
 
-        if (!email || !password) return null;
+        if (!email || !password) {
+          return null;
+        }
 
         const admin = await prisma.admin.findUnique({
-          where: { email },
+          where: {
+            email,
+          },
         });
 
-        if (!admin) return null;
+        if (!admin) {
+          return null;
+        }
 
-        const ok = await bcrypt.compare(
+        const passwordMatch = await bcrypt.compare(
           password,
           admin.password
         );
 
-        if (!ok) return null;
+        if (!passwordMatch) {
+          return null;
+        }
 
         return {
           id: admin.id,
