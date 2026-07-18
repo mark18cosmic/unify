@@ -16,7 +16,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "latest",
+    "@prisma/client": "6.16.0",
     "bcryptjs": "latest",
     "next": "latest",
     "next-auth": "beta",
@@ -29,7 +29,7 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "prisma": "latest",
+    "prisma": "6.16.0",
     "tsx": "latest",
     "typescript": "latest"
   }
