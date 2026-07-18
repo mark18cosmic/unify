@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  sku          String   @unique
+  description  String   @default("")
+  priceMvr     Int
+  genre        String   @default("")
+  condition    String   @default("New") // New | Pre-owned
+  coverImage   String   @default("")
+  stock        Int      @default(0)
+  lowStockAt   Int      @default(3)
+  published    Boolean  @default(true)
+  featured     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orderItems   OrderItem[]
+  stockLogs    StockLog[]
+}
+
+model StockLog {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  change    Int
+  reason    String   // restock | sale | correction
+  note      String   @default("")
+  actor     String   @default("system")
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  reference     String   @unique
+  customerName  String
+  phone         String
+  email         String   @default("")
+  paymentMethod String   // bank_transfer | cod
+  status        String   // see order statuses
+  // delivery / COD
+  island        String   @default("")
+  address       String   @default("")
+  // bank transfer
+  transferNote  String   @default("")
+  subtotalMvr   Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  title     String
+  priceMvr  Int
+  quantity  Int
+}
